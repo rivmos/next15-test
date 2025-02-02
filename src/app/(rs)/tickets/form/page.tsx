@@ -2,6 +2,7 @@ import { getCustomer } from "@/lib/queries/getCustomer";
 import { getTicket } from "@/lib/queries/getTicket";
 import { BackButton } from "@/components/BackButton";
 import * as Sentry from "@sentry/nextjs"
+import TicketForm from "./TicketForm";
 
 export default async function TicketFormPage({
     searchParams,
@@ -28,7 +29,7 @@ export default async function TicketFormPage({
             if (!customer) {
                 return (
                     <>
-                        <h3 className="text-2xl mb-2">Customer ID #{customerId} not found</h3>
+                        <h3 className="mb-2">Customer ID #{customerId} not found</h3>
                         <BackButton title="Go Back" variant="default" />
                     </>
                 )
@@ -37,11 +38,13 @@ export default async function TicketFormPage({
             if (!customer.active) {
                 return (
                     <>
-                        <h3 className="text-2xl mb-2">Customer ID #{customerId} is not active.</h3>
+                        <h3 className="mb-2">Customer ID #{customerId} is not active.</h3>
                         <BackButton title="Go Back" variant="default" />
                     </>
                 )
             }
+
+            return <TicketForm customer={customer}/>
         }
 
         // Edit ticket form 
@@ -51,7 +54,7 @@ export default async function TicketFormPage({
             if (!ticket) {
                 return (
                     <>
-                        <h3 className="text-2xl mb-2">Ticket ID #{ticketId} not found</h3>
+                        <h3 className="mb-2">Ticket ID #{ticketId} not found</h3>
                         <BackButton title="Go Back" variant="default" />
                     </>
                 )
@@ -59,9 +62,7 @@ export default async function TicketFormPage({
 
             const customer = await getCustomer(ticket.customerId)
 
-            // return ticket form 
-            console.log('ticket: ', ticket)
-            console.log('customer: ', customer)
+            return <TicketForm customer={customer} ticket={ticket}/>
 
         }
 
